@@ -43,6 +43,7 @@ public class SudokuUi {
 					System.out.println("\nOpen " + fName);
 					Main.readInputFile(fName);
 					Main.solveAllGivenPuzzles();
+					Main.writeOutputFile();
 					// clear previous tables and print all stuff again
 				}				
 			}

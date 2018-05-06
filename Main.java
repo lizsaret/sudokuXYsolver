@@ -45,22 +45,25 @@ public class Main {
 		for (int p = 0; p < givenPuzzles.size(); p++) {
 			System.out.println("puzzle #"+(p+1));
 			givenPuzzles.get(p).printPuzzle();
-			
+
 			givenPuzzles.get(p).solveCurrentPuzzle(0);
-			givenPuzzles.get(p).printSolutions();
-			System.out.println("regular sudoku: "+givenPuzzles.get(p).getSolutionsCount());
-
 			givenPuzzles.get(p).solveCurrentPuzzle(1);
-			givenPuzzles.get(p).printSolutions();
-			System.out.println("sudoku X: "+givenPuzzles.get(p).getSolutionsCount());
-
 			givenPuzzles.get(p).solveCurrentPuzzle(2);
-			givenPuzzles.get(p).printSolutions();
-			System.out.println("sudoku Y: "+givenPuzzles.get(p).getSolutionsCount());
-
 			givenPuzzles.get(p).solveCurrentPuzzle(3);
-			givenPuzzles.get(p).printSolutions();
-			System.out.println("sudoku XY: "+givenPuzzles.get(p).getSolutionsCount());
+			
+			System.out.println("\n---------REGULAR SUDOKU---------\n");
+			givenPuzzles.get(p).printSolutions(0);
+			System.out.println("\n---------SUDOKU X---------\n");
+			givenPuzzles.get(p).printSolutions(1);
+			System.out.println("\n---------SUDOKU Y---------\n");
+			givenPuzzles.get(p).printSolutions(2);
+			System.out.println("\n---------SUDOKU XY---------\n");
+			givenPuzzles.get(p).printSolutions(3);
+
+			System.out.println("regular sudoku: "+givenPuzzles.get(p).getSolutionsCount(0));
+			System.out.println("sudoku X: "+givenPuzzles.get(p).getSolutionsCount(1));
+			System.out.println("sudoku Y: "+givenPuzzles.get(p).getSolutionsCount(2));
+			System.out.println("sudoku XY: "+givenPuzzles.get(p).getSolutionsCount(3));
 		}		
 	}
 
@@ -75,7 +78,71 @@ public class Main {
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter("output.txt"));
 
-			// write all necessary shits to file
+			for (int p = 0; p < givenPuzzles.size(); p++) {
+				writer.write("puzzle #"+(p+1));
+				Puzzle currPuzzle = givenPuzzles.get(p); 
+				// write current puzzle
+				writer.write("\n");
+				for (int r = 0; r < currPuzzle.getSize(); r++) {
+					for (int c = 0; c < currPuzzle.getSize(); c++) 
+						writer.write((currPuzzle.getPuzzle())[r][c]+" ");
+					writer.write("\n");
+				}
+
+				// write regular sudoku solutions
+				for (int a = 0; a < currPuzzle.getSolutionsCount(0); a++) {
+					Integer[][] currAnswer = currPuzzle.getSolutions(0).get(a);
+					writer.write("puzzle #"+(p+1)+" regular sudoku solution #"+(a+1));
+					writer.write("\n");
+					for (int r = 0; r < currPuzzle.getSize(); r++) {
+						for (int c = 0; c < currPuzzle.getSize(); c++) 
+							writer.write(currAnswer[r][c]+" ");
+						writer.write("\n");
+					}					
+				}
+
+				// write sudokuX solutions
+				for (int a = 0; a < currPuzzle.getSolutionsCount(1); a++) {
+					Integer[][] currAnswer = currPuzzle.getSolutions(1).get(a);
+					writer.write("puzzle #"+(p+1)+" sudokuX solution #"+(a+1));
+					writer.write("\n");
+					for (int r = 0; r < currPuzzle.getSize(); r++) {
+						for (int c = 0; c < currPuzzle.getSize(); c++) 
+							writer.write(currAnswer[r][c]+" ");
+						writer.write("\n");
+					}					
+				}
+
+
+				// write sudokuY solutions
+				for (int a = 0; a < currPuzzle.getSolutionsCount(2); a++) {
+					Integer[][] currAnswer = currPuzzle.getSolutions(2).get(a);
+					writer.write("puzzle #"+(p+1)+" sudokuY solution #"+(a+1));
+					writer.write("\n");
+					for (int r = 0; r < currPuzzle.getSize(); r++) {
+						for (int c = 0; c < currPuzzle.getSize(); c++) 
+							writer.write(currAnswer[r][c]+" ");
+						writer.write("\n");
+					}					
+				}
+
+
+				// write sudokuX3 solutions
+				for (int a = 0; a < currPuzzle.getSolutionsCount(3); a++) {
+					Integer[][] currAnswer = currPuzzle.getSolutions(3).get(a);
+					writer.write("puzzle #"+(p+1)+" sudokuXY solution #"+(a+1));
+					writer.write("\n");
+					for (int r = 0; r < currPuzzle.getSize(); r++) {
+						for (int c = 0; c < currPuzzle.getSize(); c++) 
+							writer.write(currAnswer[r][c]+" ");
+						writer.write("\n");
+					}					
+				}
+				writer.write("\nregular sudoku: "+givenPuzzles.get(p).getSolutionsCount(0));
+				writer.write("\nsudoku X: "+givenPuzzles.get(p).getSolutionsCount(1));
+				writer.write("\nsudoku Y: "+givenPuzzles.get(p).getSolutionsCount(2));
+				writer.write("\nsudoku XY: "+givenPuzzles.get(p).getSolutionsCount(3));
+			}
 
 			writer.close();
 		}catch(Exception err){

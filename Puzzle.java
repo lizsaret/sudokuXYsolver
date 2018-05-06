@@ -6,9 +6,15 @@ import java.util.*;
 public class Puzzle {
 	private int size = 0;
 	private int subgrid = 0;
-	private int noOfSolutions = 0;
+	private int noOfSolutionsR = 0;
+	private int noOfSolutionsX = 0;
+	private int noOfSolutionsY = 0;
+	private int noOfSolutionsXY = 0;
 	private int[][] sudoku;
-	private LinkedList<Integer[][]> solutions = new LinkedList<Integer[][]>();
+	private LinkedList<Integer[][]> solutionsR = new LinkedList<Integer[][]>();
+	private LinkedList<Integer[][]> solutionsX = new LinkedList<Integer[][]>();
+	private LinkedList<Integer[][]> solutionsY = new LinkedList<Integer[][]>();
+	private LinkedList<Integer[][]> solutionsXY = new LinkedList<Integer[][]>();
 	private boolean solved = false;
 
 	public Puzzle(int[][] puzzleSudoku, int puzzleSize, int puzzleSubgrid) {
@@ -145,8 +151,8 @@ public class Puzzle {
 		int start, move, count;
 		Blank[] blankVals = new Blank[zeroCount+2];
 
-		noOfSolutions = 0;
-		solutions.clear();
+		// noOfSolutions = 0;
+		// solutions.clear();
 		// store the locations and possible values of empty cells inside an array
 		count = 1;
 		for (int r = 0; r < size; r++) {
@@ -170,7 +176,7 @@ public class Puzzle {
 				if (move == zeroCount+1) {
 					if (puzzleFull() == true) {
 						// solution found
-						noOfSolutions += 1;
+						// noOfSolutions += 1;
 						solved = true;
 						// System.out.println("solution number: "+noOfSolutions);
 						// printPuzzle();
@@ -181,7 +187,10 @@ public class Puzzle {
 							for (int c = 0; c < size; c++)
 								answer[r][c] = sudoku[r][c];
 						}
-						solutions.add(answer);
+						if (xyFlag == 0) solutionsR.add(answer);
+						else if (xyFlag == 1) solutionsX.add(answer);
+						else if (xyFlag == 2) solutionsY.add(answer);
+						else if (xyFlag == 3) solutionsXY.add(answer);
 					}
 				} else {
 					// populate stacks
@@ -218,7 +227,14 @@ public class Puzzle {
 		System.out.println("----------------------------------------");
 	}
 
-	public void printSolutions() {
+	public void printSolutions(int xyFlag) {
+		LinkedList<Integer[][]> solutions = new LinkedList<Integer[][]>();
+
+		if (xyFlag == 0) solutions.addAll(solutionsR);
+		else if (xyFlag == 1) solutions.addAll(solutionsX);
+		else if (xyFlag == 2) solutions.addAll(solutionsY);
+		else if (xyFlag == 3) solutions.addAll(solutionsXY);
+							
 		for (int i = 0; i < solutions.size(); i++) {
 			System.out.println("Solution number: "+(i+1));
 			for (int r = 0; r < size; r++) {
@@ -229,7 +245,25 @@ public class Puzzle {
 		}
 	}
 
-	public int getSolutionsCount() {
-		return this.noOfSolutions;
+	public int getSolutionsCount(int xyFlag) {
+		if (xyFlag == 0) return this.solutionsR.size();
+		else if (xyFlag == 1) return this.solutionsX.size();
+		else if (xyFlag == 2) return this.solutionsY.size();
+		else return this.solutionsXY.size();
+	}
+
+	public int getSize() {
+		return this.size;
+	}
+
+	public LinkedList<Integer[][]> getSolutions(int xyFlag) {
+		if (xyFlag == 0) return this.solutionsR;
+		else if (xyFlag == 1) return this.solutionsX;
+		else if (xyFlag == 2) return this.solutionsY;
+		else return this.solutionsXY;
+	} 
+
+	public int[][] getPuzzle() {
+		return this.sudoku;
 	}
 }
