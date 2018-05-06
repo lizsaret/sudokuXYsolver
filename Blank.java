@@ -13,10 +13,23 @@ public class Blank {
 		this.row = blankRow;
 		this.col = blankCol;
 		this.possibleValuesCount = blankPossValsCount;
-		this.possibleValues = new int[blankPossValsCount+2];
+		this.possibleValues = Arrays.copyOf(blankPossVals, blankPossValsCount);
 
 		for (int i = 0; i < possibleValuesCount; i++)
-			possibleValues[i] = blankPossValsCount[i];
+			this.possibleValues[i] = blankPossVals[i];
+	}
+
+	public void setPossVals(int[] blankPossVals) {
+		this.possibleValues = Arrays.copyOf(blankPossVals, possibleValuesCount);
+	}
+
+	public void setRowCol(int blankRow, int blankCol) {
+		this.row = blankRow;
+		this.col = blankCol;
+	}
+
+	public void setPossValsCount(int blankPossValsCount) {
+		this.possibleValuesCount = blankPossValsCount;
 	}
 
 	public int[] getPossVals() {
@@ -33,5 +46,9 @@ public class Blank {
 
 	public int getPossValsCount() {
 		return this.possibleValuesCount;		
+	}
+
+	public int getValueAt(int index) {
+		return this.possibleValues[index];
 	}
 }

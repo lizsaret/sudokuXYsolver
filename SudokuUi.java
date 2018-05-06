@@ -42,11 +42,8 @@ public class SudokuUi {
 				if (fName != "") {
 					System.out.println("\nOpen " + fName);
 					Main.readInputFile(fName);
-					// Clear all grids
-					// Main.readInputFile(fName)
-					// Main.solve stuff again
-					// Display and write shits again
-					Main.printAllGivenPuzzles();
+					Main.solveAllGivenPuzzles();
+					// clear previous tables and print all stuff again
 				}				
 			}
 		});

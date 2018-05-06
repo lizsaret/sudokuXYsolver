@@ -13,11 +13,6 @@ public class Main {
 
 	public static void main (String[] args) {
 		sudokuGui.showGui();
-		// show gui to read file
-		// read/open given file (save to arraylist)
-		// solve all given puzzles
-		// display outputs and write to file
-		// writeOutputFile();
 	}
 
 	public static void readInputFile(String file) {
@@ -44,6 +39,29 @@ public class Main {
 		}catch(Exception err) {
 			System.out.println(err.toString());
 		}
+	}
+
+	public static void solveAllGivenPuzzles() {
+		for (int p = 0; p < givenPuzzles.size(); p++) {
+			System.out.println("puzzle #"+(p+1));
+			givenPuzzles.get(p).printPuzzle();
+			
+			givenPuzzles.get(p).solveCurrentPuzzle(0);
+			givenPuzzles.get(p).printSolutions();
+			System.out.println("regular sudoku: "+givenPuzzles.get(p).getSolutionsCount());
+
+			givenPuzzles.get(p).solveCurrentPuzzle(1);
+			givenPuzzles.get(p).printSolutions();
+			System.out.println("sudoku X: "+givenPuzzles.get(p).getSolutionsCount());
+
+			givenPuzzles.get(p).solveCurrentPuzzle(2);
+			givenPuzzles.get(p).printSolutions();
+			System.out.println("sudoku Y: "+givenPuzzles.get(p).getSolutionsCount());
+
+			givenPuzzles.get(p).solveCurrentPuzzle(3);
+			givenPuzzles.get(p).printSolutions();
+			System.out.println("sudoku XY: "+givenPuzzles.get(p).getSolutionsCount());
+		}		
 	}
 
 	public static void printAllGivenPuzzles() {
