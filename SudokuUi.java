@@ -12,12 +12,20 @@ public class SudokuUi {
 	private Container frame = mainFrame.getContentPane();
 
 	private JPanel titlePanel = new JPanel();
-	private JPanel gridPanel = new JPanel();
+	private JPanel contentsPanel = new JPanel(new BorderLayout());
+	private JPanel givenPanel = new JPanel();
+	private JPanel optionsPanel = new JPanel();
+	private JPanel answersPanel = new JPanel();
 
 	private JButton browseButton = new JButton("Open Input File");
 
+	private JLabel currentPuzzleLabel = new JLabel("");
+	private JTable currGivenTable;
+
 	private int currentPuzzlePointer = 0;
 	private int currentSolutionPointer = 0;
+
+	private boolean loaded = false;
 
 	public SudokuUi() {
 		init();
@@ -29,9 +37,8 @@ public class SudokuUi {
 		mainFrame.setPreferredSize(new Dimension(1040, 600));
 
 		frame.setLayout(new BorderLayout());
-
 		frame.add(titlePanel, BorderLayout.NORTH);
-		frame.add(gridPanel, BorderLayout.CENTER);
+		frame.add(contentsPanel, BorderLayout.CENTER);
 		
 		titlePanel.add(browseButton);
 		
@@ -44,29 +51,42 @@ public class SudokuUi {
 					Main.readInputFile(fName);
 					Main.solveAllGivenPuzzles();
 					Main.writeOutputFile();
+					displayCurrentPuzzle();
 					// clear previous tables and print all stuff again
 				}				
 			}
 		});
 
+		contentsPanel.add(givenPanel, BorderLayout.WEST);
+		contentsPanel.add(optionsPanel, BorderLayout.CENTER);
+		contentsPanel.add(answersPanel, BorderLayout.EAST);
 
-		// display given puzzle at the top (also include back and next button)
-		// display larger table showing solution at the bottom
-		// include back and next buttons
-		// 	(back and next will increment and decrement the pointer)
-		// 	(this will be used for printing the current solution for the given puzzle or the current puzzle itself)
-
-
-		// show number of solutions for regular, X, Y, XY for the current puzzle
-
+		givenPanel.add(currentPuzzleLabel);
+		// contentsPanel.setBorder(BorderFactory.createLineBorder(Color.CYAN,5));
+		// givenPanel.setBorder(BorderFactory.createLineBorder(Color.RED,5));
+		// answersPanel.setBorder(BorderFactory.createLineBorder(Color.GREEN,5));
+		// optionsPanel.setBorder(BorderFactory.createLineBorder(Color.YELLOW,5));
 		mainFrame.pack();
 	}
 
-	public void displayCurrentPuzzle(Puzzle currentPuzzle) {
+	public void displayCurrentPuzzle() {
+		currentPuzzleLabel.setText("Puzzle #"+Integer.toString(currentPuzzlePointer+1));
 
+		Puzzle currentGivenPuzzle = Main.getGivenPuzzleAt(currentPuzzlePointer);
+		currGivenTable = new JTable(currentGivenPuzzle.getSize(), currentGivenPuzzle.getSize()); 
+
+		// add values in table
+		for (int r = 0; r < currentGivenPuzzle.getSize(); r++) {
+			for (int c = 0; c < currentGivenPuzzle.getSize(); c++) {
+				currGivenTable.getModel().setValueAt(currentGivenPuzzle.getPuzzle()[r][c], r, c);
+				currGivenTable.getColumnModel().getColumn(c).setPreferredWidth(30);
+			}
+		}
+
+		givenPanel.add(currGivenTable);
 	}
 
-	public void displayCurrentSolution(Puzzle currentPuzzle) {
+	public void displayCurrentSolution(Puzzle currentPuzzle, int index) {
 
 	}
 
@@ -84,6 +104,7 @@ public class SudokuUi {
 		if (result == JFileChooser.APPROVE_OPTION) {
 			File selectedFile = fileOpener.getSelectedFile();
 			fileName = selectedFile.getAbsolutePath();
+			loaded = true;
 		}
 		return fileName;
 	}
