@@ -30,6 +30,8 @@ public class SudokuUi {
 	// private JPanel givenPanel = new JPanel();
 	// private JPanel answersPanel = new JPanel();
 
+	private TextField[][] textfieldHolder;
+
 	private JButton browseButton = new JButton("Open Input File");
 	private JButton restartButton = new JButton("Restart Grid");
 	private JButton solutionButton = new JButton("Show Solution");
@@ -162,7 +164,6 @@ public class SudokuUi {
 	        }           
 	    });
 
-		
 		// browse button action listener
 		browseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -174,8 +175,6 @@ public class SudokuUi {
 					Main.writeOutputFile();
 					displayCurrentPuzzle1();
 					displayNoOfSolutions();
-					// displayCurrentPuzzle?();
-					// clear previous tables and print all stuff again
 				}				
 			}
 		});
@@ -188,13 +187,6 @@ public class SudokuUi {
 			}
 		});
 
-		// contentsPanel.add(givenPanel, BorderLayout.WEST);
-		// contentsPanel.add(optionsPanel, BorderLayout.CENTER);
-		// contentsPanel.add(answersPanel, BorderLayout.EAST);
-		// contentsPanel.setBorder(BorderFactory.createLineBorder(Color.CYAN,5));
-		// givenPanel.setBorder(BorderFactory.createLineBorder(Color.RED,5));
-		// answersPanel.setBorder(BorderFactory.createLineBorder(Color.GREEN,5));
-		// optionsPanel.setBorder(BorderFactory.createLineBorder(Color.YELLOW,5));
 		mainFrame.pack();
 	}
 
@@ -230,12 +222,20 @@ public class SudokuUi {
 		if (currentPuzzle.getSolutionsCount(solutionFlag) != 0) {
 			Integer[][] currentSolution = currentPuzzle.getSolutionAt(solutionFlag, currentSolutionPointer);
 
-			for (int r = 0; r < currentPuzzle.getSize(); r++) {
-				for (int c = 0; c < currentPuzzle.getSize(); c++) {
-					System.out.print(currentSolution[r][c]+" ");
-				}
-				System.out.println();
-			}			
+			// currGivenTable.c
+
+			// for (int r = 0; r < currentPuzzle.getSize(); r++) {
+			// 	for (int c = 0; c < currentPuzzle.getSize(); c++) {
+			// 		// place values to textfield
+			// 		// currGivenTable.
+			// 	}
+			// }			
+			// for (int r = 0; r < currentPuzzle.getSize(); r++) {
+			// 	for (int c = 0; c < currentPuzzle.getSize(); c++) {
+			// 		System.out.print(currentSolution[r][c]+" ");
+			// 	}
+			// 	System.out.println();
+			// }			
 		} else {
 			System.out.println("NO SOLUTION!! DISPLAY POPUP");
 		}
@@ -248,11 +248,17 @@ public class SudokuUi {
 		currGivenTable = new JPanel(new GridLayout(currentGivenPuzzle.getSize(), currentGivenPuzzle.getSize()));
 		currGivenTable.setPreferredSize(new Dimension(400, 400));
 
+		textfieldHolder = new TextField[currentGivenPuzzle.getSize()][currentGivenPuzzle.getSize()];
 		// add values in table
 		for (int r = 0; r < currentGivenPuzzle.getSize(); r++) {
 			for (int c = 0; c < currentGivenPuzzle.getSize(); c++) {
-
-				currGivenTable.add(new TextField(Integer.toString(currentGivenPuzzle.getPuzzle()[r][c])));
+				textfieldHolder[r][c] = new TextField("");
+				if (currentGivenPuzzle.getPuzzle()[r][c] != 0) {
+					textfieldHolder[r][c].setText(Integer.toString(currentGivenPuzzle.getPuzzle()[r][c]));
+					textfieldHolder[r][c].setEnabled(false);		
+				}
+				currGivenTable.add(textfieldHolder[r][c]); 
+				// currGivenTable.add(new TextField(Integer.toString(currentGivenPuzzle.getPuzzle()[r][c])));
 			}
 		}
 
