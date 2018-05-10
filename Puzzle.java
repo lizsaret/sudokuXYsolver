@@ -245,6 +245,20 @@ public class Puzzle {
 		}
 	}
 
+	public Integer[][] getSolutionAt(int xyFlag, int index) {
+		LinkedList<Integer[][]> solutions = new LinkedList<Integer[][]>();
+
+		if (xyFlag == 0) solutions.addAll(solutionsR);
+		else if (xyFlag == 1) solutions.addAll(solutionsX);
+		else if (xyFlag == 2) solutions.addAll(solutionsY);
+		else if (xyFlag == 3) solutions.addAll(solutionsXY);
+
+		if (index <= solutions.size()) 
+			return solutions.get(index);
+		else 
+			return solutions.get(solutions.size());
+	}
+	
 	public int getSolutionsCount(int xyFlag) {
 		if (xyFlag == 0) return this.solutionsR.size();
 		else if (xyFlag == 1) return this.solutionsX.size();

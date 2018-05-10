@@ -39,6 +39,8 @@ public class SudokuUi {
 	private JRadioButton solutionX = new JRadioButton("Sudoku X");
 	private JRadioButton solutionY = new JRadioButton("Sudoku Y");
 	private JRadioButton solutionXY = new JRadioButton("Sudoku XY");
+	private ButtonGroup solutionGroup = new ButtonGroup();
+
 
 	private JLabel currentPuzzleLabel = new JLabel("");
 	private JLabel solutionNoRegular = new JLabel("Sudoku Solutions: ");
@@ -48,6 +50,8 @@ public class SudokuUi {
 
 	private int currentPuzzlePointer = 0;
 	private int currentSolutionPointer = 0;
+	private int solutionFlag = 0;
+
 
 	private boolean loaded = false;
 
@@ -117,7 +121,8 @@ public class SudokuUi {
 		solutionRadioPanel.setOpaque(false);
 
 		solutionRegular.setOpaque(false);
-		solutionRegular.setForeground(Color.WHITE);		
+		solutionRegular.setForeground(Color.WHITE);	
+		solutionRegular.setSelected(true);		
 		solutionX.setOpaque(false);
 		solutionX.setForeground(Color.WHITE);
 		solutionY.setOpaque(false);
@@ -125,8 +130,37 @@ public class SudokuUi {
 		solutionXY.setOpaque(false);
 		solutionXY.setForeground(Color.WHITE);
 
+		solutionGroup.add(solutionRegular);
+		solutionGroup.add(solutionX);
+		solutionGroup.add(solutionY);
+		solutionGroup.add(solutionXY);
+
 		solutionButtonPanel.add(solutionButton);
 		solutionButtonPanel.setOpaque(false);
+
+		solutionRegular.addItemListener(new ItemListener() {
+	       	public void itemStateChanged(ItemEvent e) { 
+	       		if(e.getStateChange() == 1) solutionFlag = 0;
+	        }           
+	    });
+
+	    solutionX.addItemListener(new ItemListener() {
+	       	public void itemStateChanged(ItemEvent e) { 
+	       		if(e.getStateChange() == 1) solutionFlag = 1;
+	        }           
+	    });
+
+	    solutionY.addItemListener(new ItemListener() {
+	       	public void itemStateChanged(ItemEvent e) { 
+	       		if(e.getStateChange() == 1) solutionFlag = 2;
+	        }           
+	    });
+
+	    solutionXY.addItemListener(new ItemListener() {
+	       	public void itemStateChanged(ItemEvent e) { 
+	       		if(e.getStateChange() == 1) solutionFlag = 3;
+	        }           
+	    });
 
 		
 		// browse button action listener
@@ -139,9 +173,18 @@ public class SudokuUi {
 					Main.solveAllGivenPuzzles();
 					Main.writeOutputFile();
 					displayCurrentPuzzle1();
+					displayNoOfSolutions();
 					// displayCurrentPuzzle?();
 					// clear previous tables and print all stuff again
 				}				
+			}
+		});
+
+		solutionButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// System.out.println("Show Solutions for "+solutionFlag);
+				Puzzle currentGivenPuzzle = Main.getGivenPuzzleAt(currentPuzzlePointer);
+				displayCurrentSolution(currentGivenPuzzle);
 			}
 		});
 
@@ -174,6 +217,29 @@ public class SudokuUi {
 	// 	sudokuPanel1.add(currGivenTable, BorderLayout.CENTER);
 	// }
 
+	public void displayNoOfSolutions() {
+		Puzzle currentGivenPuzzle = Main.getGivenPuzzleAt(currentPuzzlePointer);
+
+		solutionNoRegular.setText("Sudoku Solutions: "+Integer.toString(currentGivenPuzzle.getSolutionsCount(0)));
+		solutionNoX.setText("Sudoku X Solutions: "+Integer.toString(currentGivenPuzzle.getSolutionsCount(1)));
+		solutionNoY.setText("Sudoku Y Solutions: "+Integer.toString(currentGivenPuzzle.getSolutionsCount(2)));
+		solutionNoXY.setText("Sudoku XY Solutions: "+Integer.toString(currentGivenPuzzle.getSolutionsCount(3)));
+	}
+
+	public void displayCurrentSolution(Puzzle currentPuzzle) {
+		if (currentPuzzle.getSolutionsCount(solutionFlag) != 0) {
+			Integer[][] currentSolution = currentPuzzle.getSolutionAt(solutionFlag, currentSolutionPointer);
+
+			for (int r = 0; r < currentPuzzle.getSize(); r++) {
+				for (int c = 0; c < currentPuzzle.getSize(); c++) {
+					System.out.print(currentSolution[r][c]+" ");
+				}
+				System.out.println();
+			}			
+		} else {
+			System.out.println("NO SOLUTION!! DISPLAY POPUP");
+		}
+	}
 
 	public void displayCurrentPuzzle1() {
 		currentPuzzleLabel.setText("Puzzle #"+Integer.toString(currentPuzzlePointer+1));
