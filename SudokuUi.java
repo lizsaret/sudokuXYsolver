@@ -13,15 +13,19 @@ public class SudokuUi {
 
 	private JPanel titlePanel = new JPanel();
 	private JPanel sudokuPanel1 = new JPanel();
-	private JPanel sudokuPanel2 = new JPanel(new BorderLayout());
+	private JPanel sudokuPanel2 = new JPanel();
+	private JPanel currGivenTable;
 	private JPanel optionsPanel1 = new JPanel();
 	private JPanel optionsPanel2 = new JPanel();
 	private JPanel optionsPanel3 = new JPanel();
 	private JPanel browseButtonPanel = new JPanel();
 	private JPanel solutionRadioPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 	private JPanel solutionLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	private JPanel puzzleLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	private JPanel puzzleButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 	private JPanel solutionButtonPanel = new JPanel();
 	private JPanel restartButtonPanel = new JPanel();
+	private JPanel puzzlePanel = new JPanel();
 
 	// private JPanel givenPanel = new JPanel();
 	// private JPanel answersPanel = new JPanel();
@@ -29,6 +33,7 @@ public class SudokuUi {
 	private JButton browseButton = new JButton("Open Input File");
 	private JButton restartButton = new JButton("Restart Grid");
 	private JButton solutionButton = new JButton("Show Solution");
+	private JButton puzzleButton = new JButton("Next Puzzle");
 
 	private JRadioButton solutionRegular = new JRadioButton("Sudoku Regular");
 	private JRadioButton solutionX = new JRadioButton("Sudoku X");
@@ -40,7 +45,6 @@ public class SudokuUi {
 	private JLabel solutionNoX = new JLabel("Sudoku X Solutions: ");
 	private JLabel solutionNoY = new JLabel("Sudoku Y Solutions: ");
 	private JLabel solutionNoXY = new JLabel("Sudoku XY Solutions: ");
-	private JTable currGivenTable;
 
 	private int currentPuzzlePointer = 0;
 	private int currentSolutionPointer = 0;
@@ -60,6 +64,17 @@ public class SudokuUi {
 		frame.add(titlePanel, BorderLayout.NORTH);
 		frame.add(optionsPanel1, BorderLayout.WEST);
 		frame.add(sudokuPanel1, BorderLayout.EAST);
+
+		sudokuPanel1.setLayout(new BorderLayout());
+		sudokuPanel1.setPreferredSize(new Dimension(810, 500));
+		sudokuPanel1.add(puzzlePanel, BorderLayout.NORTH);
+		sudokuPanel1.add(sudokuPanel2, BorderLayout.CENTER);
+
+		puzzlePanel.add(puzzleLabelPanel);
+		puzzlePanel.add(puzzleButtonPanel);
+
+		puzzleLabelPanel.add(currentPuzzleLabel);
+		puzzleButtonPanel.add(puzzleButton);
 
 		titlePanel.setBackground(Color.BLACK);
 		titlePanel.setPreferredSize(new Dimension(1000, 100));
@@ -123,14 +138,13 @@ public class SudokuUi {
 					Main.readInputFile(fName);
 					Main.solveAllGivenPuzzles();
 					Main.writeOutputFile();
-					displayCurrentPuzzle();
+					displayCurrentPuzzle1();
+					// displayCurrentPuzzle?();
 					// clear previous tables and print all stuff again
 				}				
 			}
 		});
 
-		sudokuPanel1.setPreferredSize(new Dimension(810, 500));
-		sudokuPanel1.add(currentPuzzleLabel);
 		// contentsPanel.add(givenPanel, BorderLayout.WEST);
 		// contentsPanel.add(optionsPanel, BorderLayout.CENTER);
 		// contentsPanel.add(answersPanel, BorderLayout.EAST);
@@ -141,17 +155,38 @@ public class SudokuUi {
 		mainFrame.pack();
 	}
 
-	public void displayCurrentPuzzle() {
+	// public void displayCurrentPuzzle() {
+	// 	currentPuzzleLabel.setText("Puzzle #"+Integer.toString(currentPuzzlePointer+1));
+
+	// 	Puzzle currentGivenPuzzle = Main.getGivenPuzzleAt(currentPuzzlePointer);
+	// 	currGivenTable = new JTable(currentGivenPuzzle.getSize(), currentGivenPuzzle.getSize()); 
+
+	// 	// add values in table
+	// 	for (int r = 0; r < currentGivenPuzzle.getSize(); r++) {
+	// 		for (int c = 0; c < currentGivenPuzzle.getSize(); c++) {
+
+	// 			// currGivenTable.getModel().setValueAt(currentGivenPuzzle.getPuzzle()[r][c], r, c);
+	// 			// currGivenTable.getColumnModel().getColumn(c).setPreferredWidth(30);
+	// 		}
+	// 	}
+
+
+	// 	sudokuPanel1.add(currGivenTable, BorderLayout.CENTER);
+	// }
+
+
+	public void displayCurrentPuzzle1() {
 		currentPuzzleLabel.setText("Puzzle #"+Integer.toString(currentPuzzlePointer+1));
 
 		Puzzle currentGivenPuzzle = Main.getGivenPuzzleAt(currentPuzzlePointer);
-		currGivenTable = new JTable(currentGivenPuzzle.getSize(), currentGivenPuzzle.getSize()); 
+		currGivenTable = new JPanel(new GridLayout(currentGivenPuzzle.getSize(), currentGivenPuzzle.getSize()));
+		currGivenTable.setPreferredSize(new Dimension(400, 400));
 
 		// add values in table
 		for (int r = 0; r < currentGivenPuzzle.getSize(); r++) {
 			for (int c = 0; c < currentGivenPuzzle.getSize(); c++) {
-				currGivenTable.getModel().setValueAt(currentGivenPuzzle.getPuzzle()[r][c], r, c);
-				currGivenTable.getColumnModel().getColumn(c).setPreferredWidth(30);
+
+				currGivenTable.add(new TextField(Integer.toString(currentGivenPuzzle.getPuzzle()[r][c])));
 			}
 		}
 
