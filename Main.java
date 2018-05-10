@@ -153,4 +153,8 @@ public class Main {
 	public static Puzzle getGivenPuzzleAt(int index) {
 		return givenPuzzles.get(index);
 	}
+
+	public static int getPuzzleCount() {
+		return noOfPuzzles;
+	}
 }
