@@ -156,7 +156,7 @@ public class SudokuUi {
 		}
 
 
-		sudokuPanel2.add(currGivenTable);
+		sudokuPanel1.add(currGivenTable);
 	}
 
 	public void displayCurrentSolution(Puzzle currentPuzzle, int index) {
