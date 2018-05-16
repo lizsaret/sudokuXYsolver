@@ -335,6 +335,7 @@ public class SudokuUi {
 					textfieldHolder[r][c].setText(Integer.toString(currentSolution[r][c]));
 					textfieldHolder[r][c].setHorizontalAlignment(JTextField.CENTER);
 					textfieldHolder[r][c].setEnabled(false);
+					textfieldHolder[r][c].setEditable(false);		
 				}
 			}						
 		} else {
@@ -362,7 +363,8 @@ public class SudokuUi {
 				textfieldHolder[r][c].setHorizontalAlignment(JTextField.CENTER);
 				if (currentGivenPuzzle.getPuzzle()[r][c] != 0) {
 					textfieldHolder[r][c].setText(Integer.toString(currentGivenPuzzle.getPuzzle()[r][c]));
-					textfieldHolder[r][c].setEnabled(false);		
+					textfieldHolder[r][c].setEnabled(false);	
+					textfieldHolder[r][c].setEditable(false);			
 				}
 				currGivenTable.add(textfieldHolder[r][c]); 
 			}
@@ -376,11 +378,12 @@ public class SudokuUi {
 
 		for (int r = 0; r < currentGivenPuzzle.getSize(); r++) {
 			for (int c = 0; c < currentGivenPuzzle.getSize(); c++) {
-				textfieldHolder[r][c].setText(" ");
+				textfieldHolder[r][c].setText("");
 				textfieldHolder[r][c].setHorizontalAlignment(JTextField.CENTER);
 				if (currentGivenPuzzle.getPuzzle()[r][c] != 0) {
 					textfieldHolder[r][c].setText(Integer.toString(currentGivenPuzzle.getPuzzle()[r][c]));
-					textfieldHolder[r][c].setEnabled(false);		
+					textfieldHolder[r][c].setEnabled(false);
+					textfieldHolder[r][c].setEditable(false);		
 				} 
 			}
 		}
@@ -429,17 +432,26 @@ public class SudokuUi {
 
 	public void checkSolutionGrid() {
 		Puzzle currentGivenPuzzle = Main.getGivenPuzzleAt(currentPuzzlePointer);
+		Puzzle answersGivenPuzzle = Main.getGivenPuzzleAt(currentPuzzlePointer);
 
 		for (int r = 0; r < currentGivenPuzzle.getSize(); r++) {
 			for (int c = 0; c < currentGivenPuzzle.getSize(); c++) {
-				int answers = Integer.parseInt(textfieldHolder[r][c].getText().toString());
-
-				if (currentGivenPuzzle.isValid(r, c, answers, solutionFlag) == true) {
-					textfieldHolder[r][c].setBackground(Color.GREEN);
-				} else {
+				if (textfieldHolder[r][c].getText().equals("")) {
 					textfieldHolder[r][c].setBackground(Color.RED);
+					answersGivenPuzzle.sudoku[r][c] = 0;
+				} else if (Integer.parseInt(textfieldHolder[r][c].getText()) == currentGivenPuzzle.getPuzzle()[r][c]) {
+					continue;
+				} else {
+					int answer = Integer.parseInt(textfieldHolder[r][c].getText());
+					
+					if (answersGivenPuzzle.isValid(r, c, answer, solutionFlag) == true) {
+						textfieldHolder[r][c].setBackground(Color.GREEN);
+					} else {
+						textfieldHolder[r][c].setBackground(Color.RED);
+					}
+					
+					answersGivenPuzzle.sudoku[r][c] = Integer.parseInt(textfieldHolder[r][c].getText());
 				}
-
 			}
 		}
 	}
