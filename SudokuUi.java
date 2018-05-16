@@ -26,12 +26,10 @@ public class SudokuUi {
 	private JPanel solutionButtonPanel = new JPanel();
 	private JPanel restartButtonPanel = new JPanel();
 	private JPanel submitButtonPanel = new JPanel();
+	private JPanel nextSolutionButtonPanel = new JPanel();
+	private JPanel prevSolutionButtonPanel = new JPanel();
 	private JPanel puzzlePanel = new JPanel();
-	private JPanel nextPrevSolution = new JPanel(new BorderLayout());
 	private JPanel puzzleBottomPanel = new JPanel();
-
-	// private JPanel givenPanel = new JPanel();
-	// private JPanel answersPanel = new JPanel();
 
 	private TextField[][] textfieldHolder;
 
@@ -55,6 +53,7 @@ public class SudokuUi {
 	private JLabel solutionNoX = new JLabel("Sudoku X Solutions: ");
 	private JLabel solutionNoY = new JLabel("Sudoku Y Solutions: ");
 	private JLabel solutionNoXY = new JLabel("Sudoku XY Solutions: ");
+	private JLabel currentSolutionLabel = new JLabel("");
 
 	private int currentPuzzlePointer = 0;
 	private int currentSolutionPointer = 0;
@@ -77,23 +76,14 @@ public class SudokuUi {
 		frame.add(optionsPanel1, BorderLayout.WEST);
 		frame.add(sudokuPanel1, BorderLayout.EAST);
 
-		nextSolutionButton.setBorderPainted(false);
-		prevSolutionButton.setBorderPainted(false);
-
-		nextSolutionButton.setVisible(false);
-		prevSolutionButton.setVisible(false);
-
-		nextPrevSolution.add(nextSolutionButton, BorderLayout.EAST);
-		nextPrevSolution.add(prevSolutionButton, BorderLayout.WEST);
-
 		sudokuPanel1.setLayout(new BorderLayout());
 		sudokuPanel1.setPreferredSize(new Dimension(810, 500));
 		sudokuPanel1.add(sudokuPanel2, BorderLayout.CENTER);
-		sudokuPanel1.add(nextPrevSolution, BorderLayout.SOUTH);
+		sudokuPanel1.add(puzzleBottomPanel, BorderLayout.SOUTH);
+		
 
 		puzzlePanel.add(puzzleLabelPanel);
 		puzzlePanel.add(puzzleButtonPanel);
-
 		puzzleLabelPanel.add(currentPuzzleLabel);
 		puzzleButtonPanel.add(puzzleButton);
 
@@ -101,6 +91,15 @@ public class SudokuUi {
 		restartButtonPanel.add(restartButton);
 		puzzleBottomPanel.add(restartButtonPanel);
 		puzzleBottomPanel.add(submitButtonPanel);
+
+		nextSolutionButtonPanel.add(nextSolutionButton);
+		prevSolutionButtonPanel.add(prevSolutionButton);
+		puzzleBottomPanel.add(prevSolutionButtonPanel);
+		puzzleBottomPanel.add(currentSolutionLabel);
+		puzzleBottomPanel.add(nextSolutionButtonPanel);
+
+		puzzleBottomPanel.setVisible(false);
+		puzzleBottomPanel.setOpaque(false);
 
 		titlePanel.setBackground(Color.BLACK);
 		titlePanel.setPreferredSize(new Dimension(1000, 100));
@@ -191,8 +190,10 @@ public class SudokuUi {
 					Main.writeOutputFile();
 
 					sudokuPanel1.add(puzzlePanel, BorderLayout.NORTH);
-					sudokuPanel1.add(puzzleBottomPanel, BorderLayout.SOUTH);
-
+					puzzleBottomPanel.setVisible(true);
+					nextSolutionButtonPanel.setVisible(false);
+					prevSolutionButtonPanel.setVisible(false);
+					currentSolutionLabel.setVisible(false);
 					displayCurrentPuzzle1();
 					displayNoOfSolutions();
 				}				
@@ -203,8 +204,15 @@ public class SudokuUi {
 			public void actionPerformed(ActionEvent e) {
 				displayCurrentSolution();
 				currentSolutionPointer = 0;
-				nextSolutionButton.setVisible(true);
-				prevSolutionButton.setVisible(true);
+				if (Main.getGivenPuzzleAt(currentPuzzlePointer).getSolutionsCount(solutionFlag) > 0) {
+					currentSolutionLabel.setText("Solution "+Integer.toString(currentSolutionPointer+1)+"/"
+						+Integer.toString(Main.getGivenPuzzleAt(currentPuzzlePointer).getSolutionsCount(solutionFlag)));
+					nextSolutionButtonPanel.setVisible(true);
+					prevSolutionButtonPanel.setVisible(true);
+					currentSolutionLabel.setVisible(true);
+					submitButtonPanel.setVisible(false);
+					restartButtonPanel.setVisible(false);
+				}
 			}
 		});
 
@@ -212,6 +220,8 @@ public class SudokuUi {
 			public void actionPerformed(ActionEvent e) {
 				if (currentSolutionPointer < Main.getGivenPuzzleAt(currentPuzzlePointer).getSolutionsCount(solutionFlag))
 					currentSolutionPointer++;
+				currentSolutionLabel.setText("Solution "+Integer.toString(currentSolutionPointer+1)+"/"
+					+Integer.toString(Main.getGivenPuzzleAt(currentPuzzlePointer).getSolutionsCount(solutionFlag)));
 				displayCurrentSolution();
 			}
 		});
@@ -220,6 +230,8 @@ public class SudokuUi {
 			public void actionPerformed(ActionEvent e) {
 				if (currentSolutionPointer > 0)
 					currentSolutionPointer--;
+				currentSolutionLabel.setText("Solution "+Integer.toString(currentSolutionPointer+1)+"/"
+					+Integer.toString(Main.getGivenPuzzleAt(currentPuzzlePointer).getSolutionsCount(solutionFlag)));
 				displayCurrentSolution();
 			}
 		});
@@ -252,25 +264,6 @@ public class SudokuUi {
 		mainFrame.pack();
 	}
 
-	// public void displayCurrentPuzzle() {
-	// 	currentPuzzleLabel.setText("Puzzle #"+Integer.toString(currentPuzzlePointer+1));
-
-	// 	Puzzle currentGivenPuzzle = Main.getGivenPuzzleAt(currentPuzzlePointer);
-	// 	currGivenTable = new JTable(currentGivenPuzzle.getSize(), currentGivenPuzzle.getSize()); 
-
-	// 	// add values in table
-	// 	for (int r = 0; r < currentGivenPuzzle.getSize(); r++) {
-	// 		for (int c = 0; c < currentGivenPuzzle.getSize(); c++) {
-
-	// 			// currGivenTable.getModel().setValueAt(currentGivenPuzzle.getPuzzle()[r][c], r, c);
-	// 			// currGivenTable.getColumnModel().getColumn(c).setPreferredWidth(30);
-	// 		}
-	// 	}
-
-
-	// 	sudokuPanel1.add(currGivenTable, BorderLayout.CENTER);
-	// }
-
 	public void displayNoOfSolutions() {
 		Puzzle currentGivenPuzzle = Main.getGivenPuzzleAt(currentPuzzlePointer);
 
@@ -292,8 +285,8 @@ public class SudokuUi {
 				}
 			}						
 		} else {
-			System.out.println("NO SOLUTION!! DISPLAY POPUP");
 			displayUnfilledGrid();
+			displayPuzzleBottomForEmpty();
 			JOptionPane.showMessageDialog(frame,
 		    "No possible solution for current puzzle.",
 		    "Message",
@@ -337,6 +330,14 @@ public class SudokuUi {
 				} 
 			}
 		}
+	}
+
+	public void displayPuzzleBottomForEmpty() {
+			nextSolutionButtonPanel.setVisible(false);
+			prevSolutionButtonPanel.setVisible(false);
+			currentSolutionLabel.setVisible(false);
+			submitButtonPanel.setVisible(true);
+			restartButtonPanel.setVisible(true);		
 	}
 
 	// public void checkSolutionGrid() {
