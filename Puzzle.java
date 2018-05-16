@@ -131,7 +131,7 @@ public class Puzzle {
 	}
 
 	// will check if a number is still valid for a given position
-	private boolean isValid(int row, int col, int value, int xyFlag) {
+	public boolean isValid(int row, int col, int value, int xyFlag) {
 		int[] temp = new int[size];
 		int count;
 

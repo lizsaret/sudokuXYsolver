@@ -307,11 +307,11 @@ public class SudokuUi {
 			}
 		}); 
 
-		// submitButton.addActionListener(new ActionListener() {
-		// 	public void actionPerformed(ActionEvent e) {
-		// 		checkSolutionGrid();
-		// 	}
-		// });
+		submitButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				checkSolutionGrid();
+			}
+		});
 
 		mainFrame.pack();
 	}
@@ -411,20 +411,38 @@ public class SudokuUi {
 	// public void checkSolutionGrid() {
 	// 	Puzzle currentGivenPuzzle = Main.getGivenPuzzleAt(currentPuzzlePointer);
 	// 	LinkedList<Integer[][]> solutionsChecker = currentGivenPuzzle.getSolutions(solutionFlag);
-
+	// 	Integer[][] answers = new Integer[currentGivenPuzzle.getSize()][currentGivenPuzzle.getSize()];
+		
 	// 	for (int r = 0; r < currentGivenPuzzle.getSize(); r++) {
 	// 		for (int c = 0; c < currentGivenPuzzle.getSize(); c++) {
-	// 			String answer = textfieldHolder[r][c].getText().toString();
-	// 			// System.out.println(answer);
-				
-	// 			if (solutionsChecker.contains(answer)) {
-	// 				textfieldHolder[r][c].setBackground(Color.GREEN);		
-	// 			} else {
-	// 				textfieldHolder[r][c].setBackground(Color.RED);		
-	// 			}
+	// 			answers[r][c] = Integer.parseInt(textfieldHolder[r][c].getText().toString());
+	// 			System.out.println(answers[r][c]);
 	// 		}
 	// 	}
+
+	// 	if(solutionsChecker.contains(answers)) {
+	// 		System.out.println("YES");
+	// 	} else {
+	// 		System.out.println("NO");
+	// 	}
 	// }
+
+	public void checkSolutionGrid() {
+		Puzzle currentGivenPuzzle = Main.getGivenPuzzleAt(currentPuzzlePointer);
+
+		for (int r = 0; r < currentGivenPuzzle.getSize(); r++) {
+			for (int c = 0; c < currentGivenPuzzle.getSize(); c++) {
+				int answers = Integer.parseInt(textfieldHolder[r][c].getText().toString());
+
+				if (currentGivenPuzzle.isValid(r, c, answers, solutionFlag) == true) {
+					textfieldHolder[r][c].setBackground(Color.GREEN);
+				} else {
+					textfieldHolder[r][c].setBackground(Color.RED);
+				}
+
+			}
+		}
+	}
 
 	public void showGui() {
 		mainFrame.setVisible(true);
