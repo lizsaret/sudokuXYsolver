@@ -21,8 +21,10 @@ public class SudokuUi {
 	private JPanel browseButtonPanel = new JPanel();
 	private JPanel solutionRadioPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 	private JPanel solutionLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-	private JPanel puzzleLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-	private JPanel puzzleButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+	private JPanel puzzleLabelPanel = new JPanel();
+	private JPanel prevPuzzleButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	private JPanel nextPuzzleButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+	private JPanel returnPuzzleButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 	private JPanel solutionButtonPanel = new JPanel();
 	private JPanel restartButtonPanel = new JPanel();
 	private JPanel submitButtonPanel = new JPanel();
@@ -31,12 +33,14 @@ public class SudokuUi {
 	private JPanel puzzlePanel = new JPanel();
 	private JPanel puzzleBottomPanel = new JPanel();
 
-	private TextField[][] textfieldHolder;
+	private JTextField[][] textfieldHolder;
 
 	private JButton browseButton = new JButton("Open Input File");
 	private JButton restartButton = new JButton("Restart Grid");
 	private JButton solutionButton = new JButton("Show Solution");
-	private JButton puzzleButton = new JButton("Next Puzzle");
+	private JButton prevPuzzleButton = new JButton("Previous Puzzle");
+	private JButton nextPuzzleButton = new JButton("Next Puzzle");
+	private JButton returnPuzzleButton = new JButton("Return");
 	private JButton nextSolutionButton = new JButton("Next Solution");
 	private JButton prevSolutionButton = new JButton("Previous Solution");
 	private JButton submitButton = new JButton("Submit");
@@ -81,11 +85,19 @@ public class SudokuUi {
 		sudokuPanel1.add(sudokuPanel2, BorderLayout.CENTER);
 		sudokuPanel1.add(puzzleBottomPanel, BorderLayout.SOUTH);
 		
-
+		puzzlePanel.add(prevPuzzleButtonPanel);
 		puzzlePanel.add(puzzleLabelPanel);
-		puzzlePanel.add(puzzleButtonPanel);
+		puzzlePanel.add(nextPuzzleButtonPanel);
 		puzzleLabelPanel.add(currentPuzzleLabel);
-		puzzleButtonPanel.add(puzzleButton);
+
+		prevPuzzleButtonPanel.add(prevPuzzleButton);
+		nextPuzzleButtonPanel.add(nextPuzzleButton);
+		prevPuzzleButton.setEnabled(false);
+		prevSolutionButton.setEnabled(false);
+
+		returnPuzzleButtonPanel.add(returnPuzzleButton);
+		puzzlePanel.add(returnPuzzleButtonPanel);
+		returnPuzzleButtonPanel.setVisible(false);
 
 		submitButtonPanel.add(submitButton);
 		restartButtonPanel.add(restartButton);
@@ -191,9 +203,7 @@ public class SudokuUi {
 
 					sudokuPanel1.add(puzzlePanel, BorderLayout.NORTH);
 					puzzleBottomPanel.setVisible(true);
-					nextSolutionButtonPanel.setVisible(false);
-					prevSolutionButtonPanel.setVisible(false);
-					currentSolutionLabel.setVisible(false);
+					unsetSolutionDisplay();
 					displayCurrentPuzzle1();
 					displayNoOfSolutions();
 				}				
@@ -207,32 +217,43 @@ public class SudokuUi {
 				if (Main.getGivenPuzzleAt(currentPuzzlePointer).getSolutionsCount(solutionFlag) > 0) {
 					currentSolutionLabel.setText("Solution "+Integer.toString(currentSolutionPointer+1)+"/"
 						+Integer.toString(Main.getGivenPuzzleAt(currentPuzzlePointer).getSolutionsCount(solutionFlag)));
-					nextSolutionButtonPanel.setVisible(true);
-					prevSolutionButtonPanel.setVisible(true);
-					currentSolutionLabel.setVisible(true);
-					submitButtonPanel.setVisible(false);
-					restartButtonPanel.setVisible(false);
+					setSolutionDisplay();
 				}
 			}
 		});
 
 		nextSolutionButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (currentSolutionPointer < Main.getGivenPuzzleAt(currentPuzzlePointer).getSolutionsCount(solutionFlag))
+				// System.out.println(Main.getGivenPuzzleAt(currentPuzzlePointer).getSolutionsCount(solutionFlag));
+				if (currentSolutionPointer < Main.getGivenPuzzleAt(currentPuzzlePointer).getSolutionsCount(solutionFlag) - 1) {
 					currentSolutionPointer++;
-				currentSolutionLabel.setText("Solution "+Integer.toString(currentSolutionPointer+1)+"/"
+					currentSolutionLabel.setText("Solution "+Integer.toString(currentSolutionPointer+1)+"/"
 					+Integer.toString(Main.getGivenPuzzleAt(currentPuzzlePointer).getSolutionsCount(solutionFlag)));
-				displayCurrentSolution();
+					displayCurrentSolution();
+					prevSolutionButton.setEnabled(true);
+					nextSolutionButton.setEnabled(true);
+				}
+
+				if (currentSolutionPointer == Main.getGivenPuzzleAt(currentPuzzlePointer).getSolutionsCount(solutionFlag) - 1) {
+					nextSolutionButton.setEnabled(false);
+				}
 			}
 		});
 		
 		prevSolutionButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (currentSolutionPointer > 0)
+				if (currentSolutionPointer > 0) {
 					currentSolutionPointer--;
-				currentSolutionLabel.setText("Solution "+Integer.toString(currentSolutionPointer+1)+"/"
+					currentSolutionLabel.setText("Solution "+Integer.toString(currentSolutionPointer+1)+"/"
 					+Integer.toString(Main.getGivenPuzzleAt(currentPuzzlePointer).getSolutionsCount(solutionFlag)));
-				displayCurrentSolution();
+					displayCurrentSolution();
+					prevSolutionButton.setEnabled(true);
+					nextSolutionButton.setEnabled(true);
+				}
+
+				if (currentSolutionPointer == 0) {
+					prevSolutionButton.setEnabled(false);
+				}
 			}
 		});
 
@@ -242,24 +263,55 @@ public class SudokuUi {
 			}
 		});
 
+		nextPuzzleButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (currentPuzzlePointer < Main.getPuzzleCount() - 1) {
+					currentSolutionPointer = 0;
+					currentPuzzlePointer++;
+					sudokuPanel2.removeAll();
+					displayCurrentPuzzle1();
+					displayNoOfSolutions();
+					prevPuzzleButton.setEnabled(true);
+					nextPuzzleButton.setEnabled(true);
+				} 
+
+				if (currentPuzzlePointer == Main.getPuzzleCount() - 1) {
+					nextPuzzleButton.setEnabled(false);
+				}
+			}
+		});
+
+		prevPuzzleButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (currentPuzzlePointer > 0) {
+					currentSolutionPointer = 0;
+					currentPuzzlePointer--;
+					sudokuPanel2.removeAll();
+					displayCurrentPuzzle1();
+					displayNoOfSolutions();
+					prevPuzzleButton.setEnabled(true);
+					nextPuzzleButton.setEnabled(true);
+				} 
+
+				if (currentPuzzlePointer == 0) {
+					prevPuzzleButton.setEnabled(false);
+				}
+			}
+		});
+
+		returnPuzzleButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				sudokuPanel2.removeAll();
+				displayCurrentPuzzle1();
+				unsetSolutionDisplay();
+			}
+		}); 
+
 		// submitButton.addActionListener(new ActionListener() {
 		// 	public void actionPerformed(ActionEvent e) {
 		// 		checkSolutionGrid();
 		// 	}
 		// });
-
-		puzzleButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (currentPuzzlePointer < Main.getPuzzleCount()) {
-					currentPuzzlePointer++;
-					sudokuPanel2.removeAll();
-					displayCurrentPuzzle1();
-					displayNoOfSolutions();
-				} else {
-					
-				}
-			}
-		});
 
 		mainFrame.pack();
 	}
@@ -281,12 +333,13 @@ public class SudokuUi {
 			for (int r = 0; r < currentGivenPuzzle.getSize(); r++) {
 				for (int c = 0; c < currentGivenPuzzle.getSize(); c++) {
 					textfieldHolder[r][c].setText(Integer.toString(currentSolution[r][c]));
+					textfieldHolder[r][c].setHorizontalAlignment(JTextField.CENTER);
 					textfieldHolder[r][c].setEnabled(false);
 				}
 			}						
 		} else {
 			displayUnfilledGrid();
-			displayPuzzleBottomForEmpty();
+			unsetSolutionDisplay();
 			JOptionPane.showMessageDialog(frame,
 		    "No possible solution for current puzzle.",
 		    "Message",
@@ -301,11 +354,12 @@ public class SudokuUi {
 		currGivenTable = new JPanel(new GridLayout(currentGivenPuzzle.getSize(), currentGivenPuzzle.getSize()));
 		currGivenTable.setPreferredSize(new Dimension(400, 400));
 
-		textfieldHolder = new TextField[currentGivenPuzzle.getSize()][currentGivenPuzzle.getSize()];
+		textfieldHolder = new JTextField[currentGivenPuzzle.getSize()][currentGivenPuzzle.getSize()];
 		// add values in table
 		for (int r = 0; r < currentGivenPuzzle.getSize(); r++) {
 			for (int c = 0; c < currentGivenPuzzle.getSize(); c++) {
-				textfieldHolder[r][c] = new TextField("");
+				textfieldHolder[r][c] = new JTextField("");
+				textfieldHolder[r][c].setHorizontalAlignment(JTextField.CENTER);
 				if (currentGivenPuzzle.getPuzzle()[r][c] != 0) {
 					textfieldHolder[r][c].setText(Integer.toString(currentGivenPuzzle.getPuzzle()[r][c]));
 					textfieldHolder[r][c].setEnabled(false);		
@@ -323,7 +377,7 @@ public class SudokuUi {
 		for (int r = 0; r < currentGivenPuzzle.getSize(); r++) {
 			for (int c = 0; c < currentGivenPuzzle.getSize(); c++) {
 				textfieldHolder[r][c].setText(" ");
-
+				textfieldHolder[r][c].setHorizontalAlignment(JTextField.CENTER);
 				if (currentGivenPuzzle.getPuzzle()[r][c] != 0) {
 					textfieldHolder[r][c].setText(Integer.toString(currentGivenPuzzle.getPuzzle()[r][c]));
 					textfieldHolder[r][c].setEnabled(false);		
@@ -332,23 +386,41 @@ public class SudokuUi {
 		}
 	}
 
-	public void displayPuzzleBottomForEmpty() {
+	public void unsetSolutionDisplay() {
 			nextSolutionButtonPanel.setVisible(false);
 			prevSolutionButtonPanel.setVisible(false);
 			currentSolutionLabel.setVisible(false);
+			returnPuzzleButtonPanel.setVisible(false);
 			submitButtonPanel.setVisible(true);
-			restartButtonPanel.setVisible(true);		
+			restartButtonPanel.setVisible(true);
+			nextPuzzleButtonPanel.setVisible(true);
+			prevPuzzleButtonPanel.setVisible(true);		
+	}
+
+	public void setSolutionDisplay() {
+		nextSolutionButtonPanel.setVisible(true);
+		prevSolutionButtonPanel.setVisible(true);
+		currentSolutionLabel.setVisible(true);
+		returnPuzzleButtonPanel.setVisible(true);
+		submitButtonPanel.setVisible(false);
+		restartButtonPanel.setVisible(false);
+		nextPuzzleButtonPanel.setVisible(false);
+		prevPuzzleButtonPanel.setVisible(false);
 	}
 
 	// public void checkSolutionGrid() {
 	// 	Puzzle currentGivenPuzzle = Main.getGivenPuzzleAt(currentPuzzlePointer);
+	// 	LinkedList<Integer[][]> solutionsChecker = currentGivenPuzzle.getSolutions(solutionFlag);
 
 	// 	for (int r = 0; r < currentGivenPuzzle.getSize(); r++) {
 	// 		for (int c = 0; c < currentGivenPuzzle.getSize(); c++) {
-	// 			if (currentGivenPuzzle.getPuzzle()[r][c] != currentGivenPuzzle.getSolutionAt(solutionFlag, )[r][c]) {
-	// 				textfieldHolder[r][c].setBackground(Color.RED);		
-	// 			} else {
+	// 			String answer = textfieldHolder[r][c].getText().toString();
+	// 			// System.out.println(answer);
+				
+	// 			if (solutionsChecker.contains(answer)) {
 	// 				textfieldHolder[r][c].setBackground(Color.GREEN);		
+	// 			} else {
+	// 				textfieldHolder[r][c].setBackground(Color.RED);		
 	// 			}
 	// 		}
 	// 	}
