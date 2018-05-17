@@ -143,6 +143,15 @@ public class SudokuUi {
 		solutionLabelPanel.add(solutionNoXY);
 		solutionLabelPanel.setOpaque(false);
 
+		solutionNoRegular.setOpaque(false);
+		solutionNoRegular.setForeground(Color.WHITE);			
+		solutionNoX.setOpaque(false);
+		solutionNoX.setForeground(Color.WHITE);
+		solutionNoY.setOpaque(false);
+		solutionNoY.setForeground(Color.WHITE);
+		solutionNoXY.setOpaque(false);
+		solutionNoXY.setForeground(Color.WHITE);
+
 		solutionRadioPanel.add(solutionRegular);
 		solutionRadioPanel.add(solutionX);
 		solutionRadioPanel.add(solutionY);
@@ -166,6 +175,35 @@ public class SudokuUi {
 
 		solutionButtonPanel.add(solutionButton);
 		solutionButtonPanel.setOpaque(false);
+
+		browseButton.setBackground(Color.BLACK);
+		browseButton.setForeground(Color.WHITE);
+		restartButton.setBackground(Color.BLACK);
+		restartButton.setForeground(Color.WHITE);
+		solutionButton.setBackground(Color.BLACK);
+		solutionButton.setForeground(Color.WHITE);
+		prevPuzzleButton.setBackground(Color.BLACK);
+		prevPuzzleButton.setForeground(Color.WHITE);
+		nextPuzzleButton.setBackground(Color.BLACK);
+		nextPuzzleButton.setForeground(Color.WHITE);
+		returnPuzzleButton.setBackground(Color.BLACK);
+		returnPuzzleButton.setForeground(Color.WHITE);
+		nextSolutionButton.setBackground(Color.BLACK);
+		nextSolutionButton.setForeground(Color.WHITE);
+		prevSolutionButton.setBackground(Color.BLACK);
+		prevSolutionButton.setForeground(Color.WHITE);
+		submitButton.setBackground(Color.BLACK);
+		submitButton.setForeground(Color.WHITE);
+
+		// browseButton.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+		// restartButton.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+		// solutionButton.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+		// prevPuzzleButton.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+		// nextPuzzleButton.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+		// returnPuzzleButton.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+		// nextSolutionButton.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+		// prevSolutionButton.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+		// submitButton.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
 		solutionRegular.addItemListener(new ItemListener() {
 	       	public void itemStateChanged(ItemEvent e) { 
@@ -331,7 +369,7 @@ public class SudokuUi {
 			Integer[][] currentSolution = currentGivenPuzzle.getSolutionAt(solutionFlag, currentSolutionPointer);
 
 			for (int r = 0; r < currentGivenPuzzle.getSize(); r++) {
-				for (int c = 0; c < currentGivenPuzzle.getSize(); c++) {
+				for (int c = 0; c < currentGivenPuzzle.getSize(); c++) {	
 					if (currentGivenPuzzle.getPuzzle()[r][c] == 0) {
 						textfieldHolder[r][c].setText(Integer.toString(currentSolution[r][c]));
 						textfieldHolder[r][c].setHorizontalAlignment(JTextField.CENTER);
@@ -339,6 +377,9 @@ public class SudokuUi {
 						textfieldHolder[r][c].setEditable(false);		
 						textfieldHolder[r][c].setBackground(Color.WHITE);
 						textfieldHolder[r][c].setForeground(Color.BLACK);
+					} else {
+						textfieldHolder[r][c].setBackground(Color.BLACK);
+						textfieldHolder[r][c].setForeground(Color.WHITE);
 					}
 				}
 			}						
@@ -358,6 +399,9 @@ public class SudokuUi {
 		Puzzle currentGivenPuzzle = Main.getGivenPuzzleAt(currentPuzzlePointer);
 		currGivenTable = new JPanel(new GridLayout(currentGivenPuzzle.getSize(), currentGivenPuzzle.getSize()));
 		currGivenTable.setPreferredSize(new Dimension(400, 400));
+		currGivenTable.setBackground(Color.GRAY);
+		currGivenTable.setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Color.GRAY));
+
 
 		textfieldHolder = new JTextField[currentGivenPuzzle.getSize()][currentGivenPuzzle.getSize()];
 		// add values in table
@@ -365,10 +409,25 @@ public class SudokuUi {
 			for (int c = 0; c < currentGivenPuzzle.getSize(); c++) {
 				textfieldHolder[r][c] = new JTextField("");
 				textfieldHolder[r][c].setHorizontalAlignment(JTextField.CENTER);
+
+				if ((c % currentGivenPuzzle.getSubgrid()) == 0 && c != 0) {
+					textfieldHolder[r][c].setBorder(BorderFactory.createMatteBorder(1, 3, 1, 1, Color.GRAY));
+				} else {
+					textfieldHolder[r][c].setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
+				}
+
+				if ((r % currentGivenPuzzle.getSubgrid()) == 0 && r != 0) {
+					textfieldHolder[r][c].setBorder(BorderFactory.createMatteBorder(3, 1, 1, 1, Color.GRAY));
+				} else {
+					textfieldHolder[r][c].setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
+				}
+
 				if (currentGivenPuzzle.getPuzzle()[r][c] != 0) {
 					textfieldHolder[r][c].setText(Integer.toString(currentGivenPuzzle.getPuzzle()[r][c]));
 					textfieldHolder[r][c].setEnabled(true);	
-					textfieldHolder[r][c].setEditable(false);			
+					textfieldHolder[r][c].setEditable(false);
+					textfieldHolder[r][c].setBackground(Color.BLACK);
+					textfieldHolder[r][c].setForeground(Color.WHITE);
 				}
 				currGivenTable.add(textfieldHolder[r][c]); 
 			}
@@ -384,10 +443,13 @@ public class SudokuUi {
 			for (int c = 0; c < currentGivenPuzzle.getSize(); c++) {
 				textfieldHolder[r][c].setText("");
 				textfieldHolder[r][c].setHorizontalAlignment(JTextField.CENTER);
+
 				if (currentGivenPuzzle.getPuzzle()[r][c] != 0) {
 					textfieldHolder[r][c].setText(Integer.toString(currentGivenPuzzle.getPuzzle()[r][c]));
 					textfieldHolder[r][c].setEnabled(true);
-					textfieldHolder[r][c].setEditable(false);		
+					textfieldHolder[r][c].setEditable(false);
+					textfieldHolder[r][c].setBackground(Color.BLACK);
+					textfieldHolder[r][c].setForeground(Color.WHITE);
 				} else {
 					textfieldHolder[r][c].setBackground(Color.WHITE);
 					textfieldHolder[r][c].setForeground(Color.BLACK);
@@ -410,6 +472,15 @@ public class SudokuUi {
 	}
 
 	public void setSolutionDisplay() {
+		Puzzle currentGivenPuzzle = Main.getGivenPuzzleAt(currentPuzzlePointer);
+
+		if(Main.getGivenPuzzleAt(currentPuzzlePointer).getSolutionsCount(solutionFlag) == 1) {						
+			prevSolutionButton.setEnabled(false);
+			nextSolutionButton.setEnabled(false);
+		} else {
+			nextSolutionButton.setEnabled(true);
+		}
+
 		nextSolutionButtonPanel.setVisible(true);
 		prevSolutionButtonPanel.setVisible(true);
 		currentSolutionLabel.setVisible(true);
@@ -419,25 +490,6 @@ public class SudokuUi {
 		nextPuzzleButtonPanel.setVisible(false);
 		prevPuzzleButtonPanel.setVisible(false);
 	}
-
-	// public void checkSolutionGrid() {
-	// 	Puzzle currentGivenPuzzle = Main.getGivenPuzzleAt(currentPuzzlePointer);
-	// 	LinkedList<Integer[][]> solutionsChecker = currentGivenPuzzle.getSolutions(solutionFlag);
-	// 	Integer[][] answers = new Integer[currentGivenPuzzle.getSize()][currentGivenPuzzle.getSize()];
-		
-	// 	for (int r = 0; r < currentGivenPuzzle.getSize(); r++) {
-	// 		for (int c = 0; c < currentGivenPuzzle.getSize(); c++) {
-	// 			answers[r][c] = Integer.parseInt(textfieldHolder[r][c].getText().toString());
-	// 			System.out.println(answers[r][c]);
-	// 		}
-	// 	}
-
-	// 	if(solutionsChecker.contains(answers)) {
-	// 		System.out.println("YES");
-	// 	} else {
-	// 		System.out.println("NO");
-	// 	}
-	// }
 
 	public void checkSolutionGrid() {
 		Puzzle currentGivenPuzzle = Main.getGivenPuzzleAt(currentPuzzlePointer);
