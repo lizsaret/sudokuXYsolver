@@ -332,10 +332,14 @@ public class SudokuUi {
 
 			for (int r = 0; r < currentGivenPuzzle.getSize(); r++) {
 				for (int c = 0; c < currentGivenPuzzle.getSize(); c++) {
-					textfieldHolder[r][c].setText(Integer.toString(currentSolution[r][c]));
-					textfieldHolder[r][c].setHorizontalAlignment(JTextField.CENTER);
-					textfieldHolder[r][c].setEnabled(false);
-					textfieldHolder[r][c].setEditable(false);		
+					if (currentGivenPuzzle.getPuzzle()[r][c] == 0) {
+						textfieldHolder[r][c].setText(Integer.toString(currentSolution[r][c]));
+						textfieldHolder[r][c].setHorizontalAlignment(JTextField.CENTER);
+						textfieldHolder[r][c].setEnabled(true);
+						textfieldHolder[r][c].setEditable(false);		
+						textfieldHolder[r][c].setBackground(Color.WHITE);
+						textfieldHolder[r][c].setForeground(Color.BLACK);
+					}
 				}
 			}						
 		} else {
@@ -363,7 +367,7 @@ public class SudokuUi {
 				textfieldHolder[r][c].setHorizontalAlignment(JTextField.CENTER);
 				if (currentGivenPuzzle.getPuzzle()[r][c] != 0) {
 					textfieldHolder[r][c].setText(Integer.toString(currentGivenPuzzle.getPuzzle()[r][c]));
-					textfieldHolder[r][c].setEnabled(false);	
+					textfieldHolder[r][c].setEnabled(true);	
 					textfieldHolder[r][c].setEditable(false);			
 				}
 				currGivenTable.add(textfieldHolder[r][c]); 
@@ -382,7 +386,7 @@ public class SudokuUi {
 				textfieldHolder[r][c].setHorizontalAlignment(JTextField.CENTER);
 				if (currentGivenPuzzle.getPuzzle()[r][c] != 0) {
 					textfieldHolder[r][c].setText(Integer.toString(currentGivenPuzzle.getPuzzle()[r][c]));
-					textfieldHolder[r][c].setEnabled(false);
+					textfieldHolder[r][c].setEnabled(true);
 					textfieldHolder[r][c].setEditable(false);		
 				} else {
 					textfieldHolder[r][c].setBackground(Color.WHITE);
