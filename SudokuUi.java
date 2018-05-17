@@ -384,9 +384,14 @@ public class SudokuUi {
 					textfieldHolder[r][c].setText(Integer.toString(currentGivenPuzzle.getPuzzle()[r][c]));
 					textfieldHolder[r][c].setEnabled(false);
 					textfieldHolder[r][c].setEditable(false);		
-				} 
+				} else {
+					textfieldHolder[r][c].setBackground(Color.WHITE);
+					textfieldHolder[r][c].setForeground(Color.BLACK);
+				}
 			}
 		}
+
+		// currentGivenPuzzle.printPuzzle();
 	}
 
 	public void unsetSolutionDisplay() {
@@ -432,13 +437,13 @@ public class SudokuUi {
 
 	public void checkSolutionGrid() {
 		Puzzle currentGivenPuzzle = Main.getGivenPuzzleAt(currentPuzzlePointer);
-		Puzzle answersGivenPuzzle = Main.getGivenPuzzleAt(currentPuzzlePointer);
+		Puzzle answersGivenPuzzle = new Puzzle(currentGivenPuzzle.getPuzzle(), currentGivenPuzzle.getSize(), currentGivenPuzzle.getSubgrid());
 
 		for (int r = 0; r < currentGivenPuzzle.getSize(); r++) {
 			for (int c = 0; c < currentGivenPuzzle.getSize(); c++) {
 				if (textfieldHolder[r][c].getText().equals("")) {
 					textfieldHolder[r][c].setBackground(Color.RED);
-					answersGivenPuzzle.sudoku[r][c] = 0;
+					answersGivenPuzzle.getPuzzle()[r][c] = 0;
 				} else if (Integer.parseInt(textfieldHolder[r][c].getText()) == currentGivenPuzzle.getPuzzle()[r][c]) {
 					continue;
 				} else {
@@ -450,10 +455,12 @@ public class SudokuUi {
 						textfieldHolder[r][c].setBackground(Color.RED);
 					}
 					
-					answersGivenPuzzle.sudoku[r][c] = Integer.parseInt(textfieldHolder[r][c].getText());
+					answersGivenPuzzle.getPuzzle()[r][c] = Integer.parseInt(textfieldHolder[r][c].getText());
 				}
 			}
 		}
+
+		// currentGivenPuzzle.printPuzzle();
 	}
 
 	public void showGui() {

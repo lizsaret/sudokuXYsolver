@@ -280,4 +280,8 @@ public class Puzzle {
 	public int[][] getPuzzle() {
 		return this.sudoku;
 	}
+
+	public int getSubgrid() {
+		return this.subgrid;
+	}
 }
