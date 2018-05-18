@@ -62,6 +62,7 @@ public class SudokuUi {
 	private int currentPuzzlePointer = 0;
 	private int currentSolutionPointer = 0;
 	private int solutionFlag = 0;
+	private int answerBox = 0;
 
 
 	private boolean loaded = false;
@@ -306,6 +307,7 @@ public class SudokuUi {
 				if (currentPuzzlePointer == Main.getPuzzleCount() - 1) {
 					nextPuzzleButton.setEnabled(false);
 				}
+
 			}
 		});
 
@@ -324,6 +326,7 @@ public class SudokuUi {
 				if (currentPuzzlePointer == 0) {
 					prevPuzzleButton.setEnabled(false);
 				}
+
 			}
 		});
 
@@ -387,8 +390,8 @@ public class SudokuUi {
 
 	public void displayCurrentPuzzle1() {
 		currentPuzzleLabel.setText("Puzzle #"+Integer.toString(currentPuzzlePointer+1));
-
 		Puzzle currentGivenPuzzle = Main.getGivenPuzzleAt(currentPuzzlePointer);
+		answerBox = 0;
 
 		currGivenTable = new JPanel(new GridLayout(currentGivenPuzzle.getSize(), currentGivenPuzzle.getSize()));
 		currGivenTable.setPreferredSize(new Dimension(400, 400));
@@ -419,6 +422,8 @@ public class SudokuUi {
 					textfieldHolder[r][c].setEditable(false);
 					textfieldHolder[r][c].setBackground(Color.BLACK);
 					textfieldHolder[r][c].setForeground(Color.WHITE);
+				} else {
+					answerBox++;
 				}
 				currGivenTable.add(textfieldHolder[r][c]); 
 			}
@@ -481,6 +486,7 @@ public class SudokuUi {
 	}
 
 	public void checkSolutionGrid() {
+		int answerChecker = 0;
 		Puzzle currentGivenPuzzle = Main.getGivenPuzzleAt(currentPuzzlePointer);
 		Puzzle answersGivenPuzzle = new Puzzle(currentGivenPuzzle.getPuzzle(), currentGivenPuzzle.getSize(), currentGivenPuzzle.getSubgrid());
 
@@ -496,6 +502,7 @@ public class SudokuUi {
 					
 					if (answersGivenPuzzle.isValid(r, c, answer, solutionFlag) == true) {
 						textfieldHolder[r][c].setBackground(Color.decode("#b5ffba"));
+						answerChecker++;
 					} else {
 						textfieldHolder[r][c].setBackground(Color.decode("#ffb9b9"));
 					}
@@ -503,6 +510,14 @@ public class SudokuUi {
 					answersGivenPuzzle.getPuzzle()[r][c] = Integer.parseInt(textfieldHolder[r][c].getText());
 				}
 			}
+		}
+		System.out.println(answerBox);
+
+		if (answerChecker == answerBox) {
+			JOptionPane.showMessageDialog(frame,
+		    "Congratulations, You Win!",
+		    "Message",
+		    JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 
