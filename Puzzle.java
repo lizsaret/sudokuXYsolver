@@ -78,7 +78,7 @@ public class Puzzle {
 
 		// check options for sudokuY
 		if (xyFlag == 2 || xyFlag == 3) {
-			if (size%2 != 0) {
+			if (size%2 == 0) {
 				if (isRightDiagonal(row, col) == true) {
 					for (int r = 0; r < (size/2); r++)
 						options[sudoku[r][r]] = 1;
